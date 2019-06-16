@@ -1,0 +1,38 @@
+version:  '3'
+services:
+  node:
+    image: node:latest
+    ports:
+      - "4000:4000"
+    networks:
+      - graphql-network
+    depends_on:
+      - mongo
+    container_name: graphql-node
+    working_dir: /home/node/app
+    volumes:
+      - ./src:/home/node/app
+    command: "yarn start"
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - database_data:/mongodb
+    ports:
+      - "27017:27017"
+      - "28017:28017"
+    networks:
+      - graphql-network
+    container_name: graphql-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123
+
+
+networks:
+  graphql-network:
+      driver: bridge
+
+volumes:
+  database_data:
+    driver: local
